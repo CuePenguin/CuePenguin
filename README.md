@@ -2,8 +2,8 @@
 
 # CuePenguin
 
-A collaborative show-production timeline (multi-track cues, notes, time-coded comments, live crew view,
-version history) that can **drive OBS Studio** from the timeline. Inspired by the workflow of
-[LiveEdit](https://liveedit.app/); it is an independent implementation with its own name and design.
+An open-source, collaborative show-production timeline designed to drive **OBS Studio** directly from your running order. Featuring multi-track cues, real-time crew views, time-coded comments, and built-in version history.
 
-**Zero dependencies. No `npm install`.** It only needs Node.js 22 or newer.
+Inspired by the workflow of [LiveEdit](https://liveeditapp.com), CuePenguin is an independent open-source project built from scratch.
+
+> **Zero Dependencies:** No `npm install` required. Built natively for **Node.js 22+**.
