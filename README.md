@@ -1,3 +1,5 @@
+<img width="1024" height="316" alt="image" src="https://github.com/user-attachments/assets/9a125b4f-636d-4e2d-a390-bc692c889540" />
+
 # CuePenguin
 
 A private, collaborative show-production timeline designed to drive **OBS Studio** directly from your running order—completely free with zero paywalls. Features multi-track cues, real-time crew views (Orbit), time-coded comments, and built-in version history.
