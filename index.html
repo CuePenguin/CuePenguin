@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="dark scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,6 +14,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
@@ -26,7 +27,8 @@
               dark: '#0a0d12',
               gray: '#64748b',
               light: '#f8fafc',
-              border: '#e2e8f0'
+              border: '#e2e8f0',
+              darkBorder: '#1f2937'
             }
           }
         }
@@ -36,11 +38,10 @@
 
   <style>
     body {
-      background-color: #ffffff;
-      color: #0a0d12;
       font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif;
       line-height: 1.65;
       -webkit-font-smoothing: antialiased;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     h1, h2, h3 {
@@ -55,13 +56,15 @@
       letter-spacing: -0.04em;
     }
 
-    /* Subtle Border-Only Cards with Hover Lift */
+    /* Subtle Border Cards with Hover Lift */
     .card-border {
-      border: 1px solid #e2e8f0;
+      border: 1px solid var(--border-color, #e2e8f0);
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
+    .dark .card-border {
+      border-color: #1f2937;
+    }
     .card-border:hover {
-      border-color: #0a0d12;
       transform: translateY(-3px);
     }
 
@@ -97,20 +100,10 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Floating Micro Animation for Accents */
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
-    }
-    .animate-float {
-      animation: float 4s ease-in-out infinite;
-    }
-
     /* Modal Backdrop Blur */
     .modal-backdrop {
-      background: rgba(10, 13, 18, 0.45);
+      background: rgba(10, 13, 18, 0.6);
       backdrop-filter: blur(10px);
-      transition: opacity 0.3s ease;
     }
 
     .btn-press {
@@ -121,18 +114,18 @@
     }
   </style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen bg-white text-gray-900 dark:bg-[#07090e] dark:text-gray-100">
 
-  <!-- TOPBAR / PRIVATE NOTICE (SOLID BLACK) -->
+  <!-- TOPBAR / PRIVATE NOTICE -->
   <div class="bg-black text-white text-xs font-medium py-2.5 px-4 text-center tracking-wide border-b border-white/10">
     <span class="inline-flex items-center gap-2">
       <span class="w-1.5 h-1.5 rounded-full bg-brand animate-pulse"></span>
-      🔒 Private Release &bull; 0 Paywalls &bull; Unreleased In-House Project
+      <span data-i18n="topbar">🔒 Private Release &bull; 0 Paywalls &bull; Unreleased In-House Project</span>
     </span>
   </div>
 
-  <!-- NAVIGATION HEADER (SOLID BLACK) -->
-  <header class="sticky top-0 z-40 bg-black text-white border-b border-white/10">
+  <!-- NAVIGATION HEADER -->
+  <header class="sticky top-0 z-40 bg-white/90 dark:bg-black/90 backdrop-blur-md border-b border-gray-200 dark:border-white/10">
     <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
       <a href="#" class="flex items-center gap-3 group">
         <img src="banner.png" alt="CuePenguin" class="h-7 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
@@ -140,15 +133,29 @@
 
       <!-- NAV TABS -->
       <nav class="hidden md:flex items-center gap-8 text-sm font-semibold">
-        <button onclick="switchTab('overview')" id="tab-overview" class="tab-btn active py-5 text-gray-400 hover:text-white">Overview</button>
-        <button onclick="switchTab('editor')" id="tab-editor" class="tab-btn py-5 text-gray-400 hover:text-white">Editor</button>
-        <button onclick="switchTab('orbit')" id="tab-orbit" class="tab-btn py-5 text-gray-400 hover:text-white">Orbit</button>
-        <button onclick="switchTab('releases')" id="tab-releases" class="tab-btn py-5 text-gray-400 hover:text-white">Releases</button>
+        <button onclick="switchTab('overview')" id="tab-overview" class="tab-btn active py-5 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white" data-i18n="nav_overview">Overview</button>
+        <button onclick="switchTab('editor')" id="tab-editor" class="tab-btn py-5 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white" data-i18n="nav_editor">Editor</button>
+        <button onclick="switchTab('orbit')" id="tab-orbit" class="tab-btn py-5 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white" data-i18n="nav_orbit">Orbit</button>
+        <button onclick="switchTab('releases')" id="tab-releases" class="tab-btn py-5 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white" data-i18n="nav_releases">Releases</button>
       </nav>
 
-      <span class="text-xs font-bold uppercase tracking-wider px-3 py-1 bg-white/10 border border-white/20 rounded-full text-white">
-        v2.0.0-alpha.1
-      </span>
+      <!-- SWITCHERS (LANG & THEME) -->
+      <div class="flex items-center gap-3">
+        <!-- Language Switcher -->
+        <button onclick="toggleLanguage()" class="btn-press text-xs font-bold px-2.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:border-brand">
+          <span id="lang-indicator">DE</span>
+        </button>
+
+        <!-- Theme Switcher -->
+        <button onclick="toggleTheme()" class="btn-press p-2 rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:border-brand" title="Toggle Theme">
+          <svg id="sun-icon" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          <svg id="moon-icon" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        </button>
+
+        <span class="hidden sm:inline-block text-xs font-bold uppercase tracking-wider px-3 py-1 bg-gray-100 dark:bg-white/10 border border-gray-200 dark:border-white/20 rounded-full text-gray-600 dark:text-white">
+          v2.0.0-alpha.1
+        </span>
+      </div>
     </div>
   </header>
 
@@ -159,61 +166,57 @@
       
       <!-- HERO SECTION -->
       <section class="pt-24 pb-16 px-6 max-w-5xl mx-auto text-center">
-        <h1 class="hero-title text-brand-dark mb-6">
+        <h1 class="hero-title text-gray-900 dark:text-white mb-6" data-i18n="hero_title">
           Show control.<br/>Direct from the timeline.
         </h1>
         
-        <p class="text-xl md:text-2xl text-brand-gray max-w-2xl mx-auto font-normal leading-relaxed mb-10">
+        <p class="text-xl md:text-2xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto font-normal leading-relaxed mb-10" data-i18n="hero_sub">
           A private, collaborative show-production timeline with multi-track cues, live crew view, and direct OBS Studio scene automation.
         </p>
 
         <div class="flex flex-wrap items-center justify-center gap-4">
-          <button onclick="switchTab('editor')" class="btn-press bg-brand text-white font-bold px-8 py-3.5 rounded-lg hover:bg-brand-hover shadow-sm">
+          <button onclick="switchTab('editor')" class="btn-press bg-brand text-white font-bold px-8 py-3.5 rounded-lg hover:bg-brand-hover shadow-sm" data-i18n="btn_explore">
             Explore Editor
           </button>
-          <button onclick="switchTab('releases')" class="btn-press bg-white border border-brand-border text-brand-dark font-bold px-8 py-3.5 rounded-lg hover:border-brand-dark">
+          <button onclick="switchTab('releases')" class="btn-press bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white font-bold px-8 py-3.5 rounded-lg hover:border-gray-900 dark:hover:border-white" data-i18n="btn_releases">
             View Release Log
           </button>
         </div>
       </section>
 
       <!-- 2-COLUMN FEATURE SECTION -->
-      <section class="py-20 px-6 border-t border-brand-border bg-brand-light">
+      <section class="py-20 px-6 border-t border-gray-200 dark:border-gray-800/80 bg-gray-50 dark:bg-[#0b0e14]">
         <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <span class="text-xs font-bold uppercase tracking-widest text-brand mb-3 block animate-float">Seamless Automation</span>
-            <h2 class="text-3xl md:text-5xl font-bold text-brand-dark mb-6">Driven by live timecode. Built for precision.</h2>
-            <p class="text-brand-gray text-lg mb-6">
+            <span class="text-xs font-bold uppercase tracking-widest text-brand mb-3 block" data-i18n="feat_tag">Seamless Automation</span>
+            <h2 class="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6" data-i18n="feat_title">Driven by live timecode. Built for precision.</h2>
+            <p class="text-gray-600 dark:text-gray-400 text-lg mb-6" data-i18n="feat_desc">
               CuePenguin connects directly to your running order. Trigger OBS Studio scenes, switch cameras, manage timing bars, and coordinate your crew from a single, unified interface.
             </p>
-            <ul class="space-y-3 text-sm font-semibold text-brand-dark">
+            <ul class="space-y-3 text-sm font-semibold text-gray-900 dark:text-white">
               <li class="flex items-center gap-3">
-                <span class="w-2 h-2 rounded-full bg-brand"></span> Multi-track timeline cueing
+                <span class="w-2 h-2 rounded-full bg-brand"></span> <span data-i18n="bullet_1">Multi-track timeline cueing</span>
               </li>
               <li class="flex items-center gap-3">
-                <span class="w-2 h-2 rounded-full bg-brand"></span> OBS Studio automation & scene sync
+                <span class="w-2 h-2 rounded-full bg-brand"></span> <span data-i18n="bullet_2">OBS Studio automation & scene sync</span>
               </li>
               <li class="flex items-center gap-3">
-                <span class="w-2 h-2 rounded-full bg-brand"></span> Real-time crew view with Orbit
+                <span class="w-2 h-2 rounded-full bg-brand"></span> <span data-i18n="bullet_3">Real-time crew view with Orbit</span>
               </li>
             </ul>
           </div>
           
-          <div class="card-border p-8 bg-white rounded-2xl">
-            <h3 class="text-xl font-bold mb-4 text-brand-dark">Project & Scene Management</h3>
-            <p class="text-brand-gray text-sm mb-6">Organize your show files cleanly. Access projects via structured tables, playlist views, and quick pin filters.</p>
+          <div class="card-border p-8 bg-white dark:bg-[#121620] rounded-2xl">
+            <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-white" data-i18n="box_title">Project & Scene Management</h3>
+            <p class="text-gray-500 dark:text-gray-400 text-sm mb-6" data-i18n="box_desc">Organize your show files cleanly. Access projects via structured tables, playlist views, and quick pin filters.</p>
             <div class="space-y-3">
-              <div class="p-3 bg-brand-light border border-brand-border rounded-lg text-xs font-medium flex justify-between items-center">
+              <div class="p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-xs font-medium flex justify-between items-center">
                 <span>📍 Main Stage Running Order</span>
-                <span class="text-brand-gray bg-white border border-brand-border px-2 py-0.5 rounded">12 Cues</span>
+                <span class="text-gray-500 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 px-2 py-0.5 rounded">12 Cues</span>
               </div>
-              <div class="p-3 bg-brand-light border border-brand-border rounded-lg text-xs font-medium flex justify-between items-center">
+              <div class="p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-xs font-medium flex justify-between items-center">
                 <span>📁 Keynote Presentation</span>
-                <span class="text-brand-gray bg-white border border-brand-border px-2 py-0.5 rounded">8 Cues</span>
-              </div>
-              <div class="p-3 bg-brand-light border border-brand-border rounded-lg text-xs font-medium flex justify-between items-center">
-                <span>📁 Intermission Stream</span>
-                <span class="text-brand-gray bg-white border border-brand-border px-2 py-0.5 rounded">4 Cues</span>
+                <span class="text-gray-500 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 px-2 py-0.5 rounded">8 Cues</span>
               </div>
             </div>
           </div>
@@ -222,26 +225,26 @@
 
       <!-- 3-COLUMN CARDS -->
       <section class="py-24 px-6 max-w-6xl mx-auto">
-        <h2 class="text-3xl md:text-4xl font-bold text-brand-dark text-center mb-16">Designed for live performance.</h2>
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white text-center mb-16" data-i18n="cards_heading">Designed for live performance.</h2>
         
         <div class="grid md:grid-cols-3 gap-8">
-          <div class="card-border p-8 rounded-xl bg-white">
-            <h3 class="text-xl font-bold mb-3 text-brand-dark">Multi-Track Cues</h3>
-            <p class="text-brand-gray text-sm leading-relaxed">
+          <div class="card-border p-8 rounded-xl bg-white dark:bg-[#121620]">
+            <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white" data-i18n="card_1_title">Multi-Track Cues</h3>
+            <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed" data-i18n="card_1_desc">
               Plan complex shows with camera switching, audio waveforms, graphic triggers, and custom timing lanes.
             </p>
           </div>
 
-          <div class="card-border p-8 rounded-xl bg-white">
-            <h3 class="text-xl font-bold mb-3 text-brand-dark">Orbit Crew View</h3>
-            <p class="text-brand-gray text-sm leading-relaxed">
+          <div class="card-border p-8 rounded-xl bg-white dark:bg-[#121620]">
+            <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white" data-i18n="card_2_title">Orbit Crew View</h3>
+            <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed" data-i18n="card_2_desc">
               Give your camera operators and stage crew a live, synced countdown, colored camera tiles, and GO buzz cues.
             </p>
           </div>
 
-          <div class="card-border p-8 rounded-xl bg-white">
-            <h3 class="text-xl font-bold mb-3 text-brand-dark">Version Control</h3>
-            <p class="text-brand-gray text-sm leading-relaxed">
+          <div class="card-border p-8 rounded-xl bg-white dark:bg-[#121620]">
+            <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white" data-i18n="card_3_title">Version Control</h3>
+            <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed" data-i18n="card_3_desc">
               Track changes, revert edits, and leave time-coded comments across the team without breaking show state.
             </p>
           </div>
@@ -253,30 +256,30 @@
     <!-- ==================== TAB 2: EDITOR ==================== -->
     <div id="view-editor" class="tab-content hidden">
       <section class="py-16 px-6 max-w-5xl mx-auto">
-        <span class="text-xs font-bold uppercase tracking-widest text-brand mb-2 block">Core Workspace</span>
-        <h1 class="text-4xl md:text-6xl font-extrabold text-brand-dark mb-6">The CuePenguin Editor</h1>
-        <p class="text-xl text-brand-gray mb-12 max-w-2xl">
+        <span class="text-xs font-bold uppercase tracking-widest text-brand mb-2 block" data-i18n="ed_tag">Core Workspace</span>
+        <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-6" data-i18n="ed_title">The CuePenguin Editor</h1>
+        <p class="text-xl text-gray-500 dark:text-gray-400 mb-12 max-w-2xl" data-i18n="ed_sub">
           Everything you need to write, refine, and execute complex production sequences in real time.
         </p>
 
         <div class="space-y-8">
-          <div class="card-border p-8 rounded-xl bg-white">
-            <h3 class="text-2xl font-bold mb-3 text-brand-dark">Playlist Scene Navigation</h3>
-            <p class="text-brand-gray text-base leading-relaxed">
+          <div class="card-border p-8 rounded-xl bg-white dark:bg-[#121620]">
+            <h3 class="text-2xl font-bold mb-3 text-gray-900 dark:text-white" data-i18n="ed_c1_title">Playlist Scene Navigation</h3>
+            <p class="text-gray-500 dark:text-gray-400 text-base leading-relaxed" data-i18n="ed_c1_desc">
               Step through show scenes effortlessly using the top bar controls. Scene navigation lets operators move through chronological projects within active playlists with auto-wrapping.
             </p>
           </div>
 
           <div class="grid md:grid-cols-2 gap-8">
-            <div class="card-border p-8 rounded-xl bg-white">
-              <h3 class="text-xl font-bold mb-3 text-brand-dark">Time-Coded Comments</h3>
-              <p class="text-brand-gray text-sm">
+            <div class="card-border p-8 rounded-xl bg-white dark:bg-[#121620]">
+              <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white" data-i18n="ed_c2_title">Time-Coded Comments</h3>
+              <p class="text-gray-500 dark:text-gray-400 text-sm" data-i18n="ed_c2_desc">
                 Attach feedback and notes directly to precise timeframes for instant collaboration during rehearsals.
               </p>
             </div>
-            <div class="card-border p-8 rounded-xl bg-white">
-              <h3 class="text-xl font-bold mb-3 text-brand-dark">Reorganized Menus</h3>
-              <p class="text-brand-gray text-sm">
+            <div class="card-border p-8 rounded-xl bg-white dark:bg-[#121620]">
+              <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white" data-i18n="ed_c3_title">Reorganized Menus</h3>
+              <p class="text-gray-500 dark:text-gray-400 text-sm" data-i18n="ed_c3_desc">
                 Cleanly structured options grouped into Show, Settings, Share, Export & Import, and Help.
               </p>
             </div>
@@ -288,23 +291,23 @@
     <!-- ==================== TAB 3: ORBIT ==================== -->
     <div id="view-orbit" class="tab-content hidden">
       <section class="py-16 px-6 max-w-5xl mx-auto">
-        <span class="text-xs font-bold uppercase tracking-widest text-brand mb-2 block">Live Crew Sync</span>
-        <h1 class="text-4xl md:text-6xl font-extrabold text-brand-dark mb-6">Orbit Live View</h1>
-        <p class="text-xl text-brand-gray mb-12 max-w-2xl">
+        <span class="text-xs font-bold uppercase tracking-widest text-brand mb-2 block" data-i18n="orb_tag">Live Crew Sync</span>
+        <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-6" data-i18n="orb_title">Orbit Live View</h1>
+        <p class="text-xl text-gray-500 dark:text-gray-400 mb-12 max-w-2xl" data-i18n="orb_sub">
           A dedicated view for floor managers, camera operators, and stage directors.
         </p>
 
         <div class="grid md:grid-cols-2 gap-8 mb-12">
-          <div class="card-border p-8 rounded-xl bg-white">
-            <h3 class="text-xl font-bold mb-3 text-brand-dark">Flat List & Camera Tiles</h3>
-            <p class="text-brand-gray text-sm">
+          <div class="card-border p-8 rounded-xl bg-white dark:bg-[#121620]">
+            <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white" data-i18n="orb_c1_title">Flat List & Camera Tiles</h3>
+            <p class="text-gray-500 dark:text-gray-400 text-sm" data-i18n="orb_c1_desc">
               Displays colored camera tiles, cue length countdowns, and progress bars directly inside each running row.
             </p>
           </div>
 
-          <div class="card-border p-8 rounded-xl bg-white">
-            <h3 class="text-xl font-bold mb-3 text-brand-dark">Custom Device Settings</h3>
-            <p class="text-brand-gray text-sm">
+          <div class="card-border p-8 rounded-xl bg-white dark:bg-[#121620]">
+            <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white" data-i18n="orb_c2_title">Custom Device Settings</h3>
+            <p class="text-gray-500 dark:text-gray-400 text-sm" data-i18n="orb_c2_desc">
               Adjust accent colors, row heights, font sizes, screen keep-awake flags, and GO buzz vibration rules per device.
             </p>
           </div>
@@ -315,26 +318,26 @@
     <!-- ==================== TAB 4: RELEASES ==================== -->
     <div id="view-releases" class="tab-content hidden">
       <section class="py-16 px-6 max-w-4xl mx-auto">
-        <span class="text-xs font-bold uppercase tracking-widest text-brand mb-2 block">Version History</span>
-        <h1 class="text-4xl md:text-5xl font-extrabold text-brand-dark mb-8">GitHub Release Sync</h1>
+        <span class="text-xs font-bold uppercase tracking-widest text-brand mb-2 block" data-i18n="rel_tag">Version History</span>
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-8" data-i18n="rel_title">GitHub Release Sync</h1>
 
-        <!-- Release Version Switcher -->
-        <div class="flex border-b border-brand-border mb-8 gap-6">
-          <button onclick="showRelease('v2.0.0-alpha.1')" id="rel-v2.0.0-alpha.1" class="rel-btn font-bold text-brand pb-3 border-b-2 border-brand transition-all">v2.0.0-alpha.1</button>
-          <button onclick="showRelease('v1.6.0')" id="rel-v1.6.0" class="rel-btn text-brand-gray hover:text-brand-dark pb-3 border-b-2 border-transparent transition-all">v1.6.0</button>
+        <!-- Release Switcher -->
+        <div class="flex border-b border-gray-200 dark:border-gray-800 mb-8 gap-6">
+          <button onclick="showRelease('v2.0.0-alpha.1')" id="rel-v2.0.0-alpha.1" class="rel-btn font-bold text-brand pb-3 border-b-2 border-brand">v2.0.0-alpha.1</button>
+          <button onclick="showRelease('v1.6.0')" id="rel-v1.6.0" class="rel-btn text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white pb-3 border-b-2 border-transparent">v1.6.0</button>
         </div>
 
         <!-- Release Content: v2.0.0-alpha.1 -->
         <div id="rel-content-v2.0.0-alpha.1" class="rel-block space-y-6">
-          <div class="card-border p-8 rounded-xl bg-white">
+          <div class="card-border p-8 rounded-xl bg-white dark:bg-[#121620]">
             <div class="flex justify-between items-center mb-4">
-              <h2 class="text-2xl font-bold text-brand-dark">Release v2.0.0-alpha.1</h2>
-              <span class="text-xs bg-brand-light border border-brand-border px-3 py-1 rounded-full font-bold">Latest Alpha</span>
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Release v2.0.0-alpha.1</h2>
+              <span class="text-xs bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-3 py-1 rounded-full font-bold">Latest Alpha</span>
             </div>
-            <p class="text-sm text-brand-gray mb-6">First step of the V2 redesign focusing on start screen table updates and playlist navigation.</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">First step of the V2 redesign focusing on start screen table updates and playlist navigation.</p>
             
-            <h3 class="font-bold text-brand-dark mb-2">Projects Screen (Start)</h3>
-            <ul class="list-disc list-inside text-sm text-brand-gray space-y-1 mb-6">
+            <h3 class="font-bold text-gray-900 dark:text-white mb-2">Projects Screen (Start)</h3>
+            <ul class="list-disc list-inside text-sm text-gray-500 dark:text-gray-400 space-y-1 mb-6">
               <li>Projects shown as a table: pin, name, playlist, updated, cues, and row actions.</li>
               <li>Sort by name or updated date by clicking column headers.</li>
               <li>Search projects by name or playlist.</li>
@@ -342,8 +345,8 @@
               <li>Playlists sidebar with counts.</li>
             </ul>
 
-            <h3 class="font-bold text-brand-dark mb-2">Editor</h3>
-            <ul class="list-disc list-inside text-sm text-brand-gray space-y-1">
+            <h3 class="font-bold text-gray-900 dark:text-white mb-2">Editor</h3>
+            <ul class="list-disc list-inside text-sm text-gray-500 dark:text-gray-400 space-y-1">
               <li>Previous and next buttons in the top bar step through playlist projects.</li>
               <li>Playlist name appears under the project title.</li>
             </ul>
@@ -352,20 +355,14 @@
 
         <!-- Release Content: v1.6.0 -->
         <div id="rel-content-v1.6.0" class="rel-block hidden space-y-6">
-          <div class="card-border p-8 rounded-xl bg-white">
-            <h2 class="text-2xl font-bold text-brand-dark mb-4">Release v1.6.0</h2>
-            <p class="text-sm text-brand-gray mb-6">Major update featuring start screen groups and Orbit crew view redesigns.</p>
+          <div class="card-border p-8 rounded-xl bg-white dark:bg-[#121620]">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Release v1.6.0</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Major update featuring start screen groups and Orbit crew view redesigns.</p>
             
-            <h3 class="font-bold text-brand-dark mb-2">Orbit (Crew View)</h3>
-            <ul class="list-disc list-inside text-sm text-brand-gray space-y-1 mb-6">
+            <h3 class="font-bold text-gray-900 dark:text-white mb-2">Orbit (Crew View)</h3>
+            <ul class="list-disc list-inside text-sm text-gray-500 dark:text-gray-400 space-y-1 mb-6">
               <li>Redesigned flat list with colored camera tiles and timing bars.</li>
               <li>Settings panel saved per device (accent colors, text size, buzz on GO).</li>
-            </ul>
-
-            <h3 class="font-bold text-brand-dark mb-2">Editor</h3>
-            <ul class="list-disc list-inside text-sm text-brand-gray space-y-1">
-              <li>Menu reorganized into Show, Show settings, Share, Export & import, Help.</li>
-              <li>Back to start menu navigation option.</li>
             </ul>
           </div>
         </div>
@@ -376,81 +373,212 @@
   </main>
 
   <!-- APPLE-STYLE FOOTER WITH LEGAL POLICIES -->
-  <footer class="border-t border-brand-border bg-brand-light py-12 px-6">
-    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-brand-gray">
-      
+  <footer class="border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-[#0b0e14] py-12 px-6">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-gray-500 dark:text-gray-400">
       <div>
-        <p class="font-semibold text-brand-dark mb-1">CuePenguin Software</p>
-        <p>Independent show-control software. Workflow inspired by LiveEdit.</p>
+        <p class="font-semibold text-gray-900 dark:text-white mb-1">CuePenguin Software</p>
+        <p data-i18n="footer_sub">Independent show-control software. Workflow inspired by LiveEdit.</p>
       </div>
 
       <div class="flex items-center gap-6 font-semibold">
-        <button onclick="openModal('privacy-modal')" class="hover:text-brand-dark transition-colors">Privacy Policy</button>
-        <button onclick="openModal('terms-modal')" class="hover:text-brand-dark transition-colors">Terms of Use</button>
+        <button onclick="openModal('privacy-modal')" class="hover:text-gray-900 dark:hover:text-white transition-colors" data-i18n="link_privacy">Privacy Policy</button>
+        <button onclick="openModal('terms-modal')" class="hover:text-gray-900 dark:hover:text-white transition-colors" data-i18n="link_terms">Terms of Use</button>
       </div>
-
     </div>
   </footer>
 
   <!-- PRIVACY POLICY MODAL -->
   <div id="privacy-modal" class="fixed inset-0 modal-backdrop hidden z-50 flex items-center justify-center p-4">
-    <div class="bg-white max-w-xl w-full p-8 rounded-2xl border border-brand-border shadow-2xl relative animate-fadeIn">
-      <h3 class="text-2xl font-bold text-brand-dark mb-4">Privacy Policy</h3>
-      <div class="text-sm text-brand-gray space-y-4 max-h-96 overflow-y-auto pr-2">
-        <p>CuePenguin is a private, unreleased software. No personal data, telemetry, or usage statistics are transmitted to external servers.</p>
-        <p>All project files, settings, and configurations remain 100% local on your executing system and local network environment.</p>
+    <div class="bg-white dark:bg-[#121620] max-w-xl w-full p-8 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl relative">
+      <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4" data-i18n="priv_modal_title">Privacy Policy</h3>
+      <div class="text-sm text-gray-500 dark:text-gray-400 space-y-4 max-h-96 overflow-y-auto pr-2">
+        <p data-i18n="priv_modal_p1">CuePenguin is a private, unreleased software. No personal data, telemetry, or usage statistics are transmitted to external servers.</p>
+        <p data-i18n="priv_modal_p2">All project files, settings, and configurations remain 100% local on your executing system and local network environment.</p>
       </div>
       <div class="mt-8 text-right">
-        <button onclick="closeModal('privacy-modal')" class="btn-press bg-brand-dark text-white font-bold px-6 py-2 rounded-lg text-sm hover:bg-brand">Close</button>
+        <button onclick="closeModal('privacy-modal')" class="btn-press bg-gray-900 dark:bg-white text-white dark:text-black font-bold px-6 py-2 rounded-lg text-sm" data-i18n="btn_close">Close</button>
       </div>
     </div>
   </div>
 
-  <!-- EXPANDED TERMS OF USE MODAL -->
+  <!-- TERMS OF USE MODAL -->
   <div id="terms-modal" class="fixed inset-0 modal-backdrop hidden z-50 flex items-center justify-center p-4">
-    <div class="bg-white max-w-xl w-full p-8 rounded-2xl border border-brand-border shadow-2xl relative animate-fadeIn">
-      <h3 class="text-2xl font-bold text-brand-dark mb-4">Terms of Use</h3>
-      <div class="text-sm text-brand-gray space-y-4 max-h-96 overflow-y-auto pr-2">
+    <div class="bg-white dark:bg-[#121620] max-w-xl w-full p-8 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl relative">
+      <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4" data-i18n="terms_modal_title">Terms of Use</h3>
+      <div class="text-sm text-gray-500 dark:text-gray-400 space-y-4 max-h-96 overflow-y-auto pr-2">
         <div>
-          <h4 class="font-bold text-brand-dark mb-1">1. Private & Internal Availability</h4>
-          <p>CuePenguin is a non-commercial, internal show-production platform built for in-house execution. Access is restricted to authorized team members and stage operators.</p>
+          <h4 class="font-bold text-gray-900 dark:text-white mb-1" data-i18n="terms_h1">1. Private & Internal Availability</h4>
+          <p data-i18n="terms_p1">CuePenguin is a non-commercial, internal show-production platform built for in-house execution. Access is restricted to authorized team members and stage operators.</p>
         </div>
-
         <div>
-          <h4 class="font-bold text-brand-dark mb-1">2. Zero Paywalls & Licensing</h4>
-          <p>The platform is provided free of subscriptions, paywalls, or feature tiering. All tools—including multi-track cue editing, OBS Studio automation, and Orbit crew views—are fully available out-of-the-box.</p>
+          <h4 class="font-bold text-gray-900 dark:text-white mb-1" data-i18n="terms_h2">2. Zero Paywalls & Licensing</h4>
+          <p data-i18n="terms_p2">The platform is provided free of subscriptions, paywalls, or feature tiering. All tools are fully available out-of-the-box.</p>
         </div>
-
         <div>
-          <h4 class="font-bold text-brand-dark mb-1">3. Workflow Attribution</h4>
-          <p>CuePenguin is independently designed and developed. While its operational workflow is inspired by LiveEdit, it shares no underlying source code, assets, or proprietary frameworks with third-party vendors.</p>
-        </div>
-
-        <div>
-          <h4 class="font-bold text-brand-dark mb-1">4. System & Hardware Operations</h4>
-          <p>Operators are responsible for local machine performance, network latency during WebSocket synchronization, and verifying OBS Studio scene bindings prior to live performance triggering.</p>
-        </div>
-
-        <div>
-          <h4 class="font-bold text-brand-dark mb-1">5. Software Disclaimer</h4>
-          <p>CuePenguin is provided on an "as-is" basis for internal production workflows. Future features, UI updates, and alpha builds remain subject to in-house roadmap iterations.</p>
+          <h4 class="font-bold text-gray-900 dark:text-white mb-1" data-i18n="terms_h3">3. Workflow Attribution</h4>
+          <p data-i18n="terms_p3">CuePenguin is independently designed and developed. Inspired by LiveEdit workflows, but shares zero underlying code.</p>
         </div>
       </div>
       <div class="mt-8 text-right">
-        <button onclick="closeModal('terms-modal')" class="btn-press bg-brand-dark text-white font-bold px-6 py-2 rounded-lg text-sm hover:bg-brand">Close</button>
+        <button onclick="closeModal('terms-modal')" class="btn-press bg-gray-900 dark:bg-white text-white dark:text-black font-bold px-6 py-2 rounded-lg text-sm" data-i18n="btn_close">Close</button>
       </div>
     </div>
   </div>
 
-  <!-- JAVASCRIPT FOR TABS & MODALS -->
+  <!-- SCRIPT FOR TABS, MODALS, THEME & LANG SWITCHING -->
   <script>
+    // --- LANGUAGE SYSTEM ---
+    const i18nData = {
+      en: {
+        topbar: "🔒 Private Release • 0 Paywalls • Unreleased In-House Project",
+        nav_overview: "Overview",
+        nav_editor: "Editor",
+        nav_orbit: "Orbit",
+        nav_releases: "Releases",
+        hero_title: "Show control.<br/>Direct from the timeline.",
+        hero_sub: "A private, collaborative show-production timeline with multi-track cues, live crew view, and direct OBS Studio scene automation.",
+        btn_explore: "Explore Editor",
+        btn_releases: "View Release Log",
+        feat_tag: "Seamless Automation",
+        feat_title: "Driven by live timecode. Built for precision.",
+        feat_desc: "CuePenguin connects directly to your running order. Trigger OBS Studio scenes, switch cameras, manage timing bars, and coordinate your crew from a single, unified interface.",
+        bullet_1: "Multi-track timeline cueing",
+        bullet_2: "OBS Studio automation & scene sync",
+        bullet_3: "Real-time crew view with Orbit",
+        box_title: "Project & Scene Management",
+        box_desc: "Organize your show files cleanly. Access projects via structured tables, playlist views, and quick pin filters.",
+        cards_heading: "Designed for live performance.",
+        card_1_title: "Multi-Track Cues",
+        card_1_desc: "Plan complex shows with camera switching, audio waveforms, graphic triggers, and custom timing lanes.",
+        card_2_title: "Orbit Crew View",
+        card_2_desc: "Give your camera operators and stage crew a live, synced countdown, colored camera tiles, and GO buzz cues.",
+        card_3_title: "Version Control",
+        card_3_desc: "Track changes, revert edits, and leave time-coded comments across the team without breaking show state.",
+        ed_tag: "Core Workspace",
+        ed_title: "The CuePenguin Editor",
+        ed_sub: "Everything you need to write, refine, and execute complex production sequences in real time.",
+        ed_c1_title: "Playlist Scene Navigation",
+        ed_c1_desc: "Step through show scenes effortlessly using top bar controls with chronological playlists and auto-wrapping.",
+        ed_c2_title: "Time-Coded Comments",
+        ed_c2_desc: "Attach feedback and notes directly to precise timeframes for instant rehearsal collaboration.",
+        ed_c3_title: "Reorganized Menus",
+        ed_c3_desc: "Cleanly structured options grouped into Show, Settings, Share, Export & Import, and Help.",
+        orb_tag: "Live Crew Sync",
+        orb_title: "Orbit Live View",
+        orb_sub: "A dedicated view for floor managers, camera operators, and stage directors.",
+        orb_c1_title: "Flat List & Camera Tiles",
+        orb_c1_desc: "Displays colored camera tiles, cue length countdowns, and progress bars directly inside each running row.",
+        orb_c2_title: "Custom Device Settings",
+        orb_c2_desc: "Adjust accent colors, row heights, font sizes, screen keep-awake flags, and GO buzz rules per device.",
+        rel_tag: "Version History",
+        rel_title: "GitHub Release Sync",
+        footer_sub: "Independent show-control software. Workflow inspired by LiveEdit.",
+        link_privacy: "Privacy Policy",
+        link_terms: "Terms of Use",
+        priv_modal_title: "Privacy Policy",
+        priv_modal_p1: "CuePenguin is a private, unreleased software. No personal data or telemetry is transmitted to external servers.",
+        priv_modal_p2: "All project files, settings, and configurations remain 100% local on your executing system.",
+        terms_modal_title: "Terms of Use",
+        terms_h1: "1. Private & Internal Availability",
+        terms_p1: "CuePenguin is an internal show-production platform built for in-house execution.",
+        terms_h2: "2. Zero Paywalls & Licensing",
+        terms_p2: "The platform is provided free of subscriptions or paywalls. All features are fully unlocked.",
+        terms_h3: "3. Workflow Attribution",
+        terms_p3: "CuePenguin is independently developed. Inspired by LiveEdit workflows, but shares zero underlying code.",
+        btn_close: "Close"
+      },
+      de: {
+        topbar: "🔒 Privater Release • 0 Paywalls • Internes In-House Projekt",
+        nav_overview: "Übersicht",
+        nav_editor: "Editor",
+        nav_orbit: "Orbit",
+        nav_releases: "Versions-Log",
+        hero_title: "Show-Steuerung.<br/>Direkt von der Timeline.",
+        hero_sub: "Eine private, kollaborative Show-Timeline mit Multi-Track-Cues, Live-Crew-Ansicht und direkter OBS Studio Automatisierung.",
+        btn_explore: "Editor Erkunden",
+        btn_releases: "Changelog Ansehen",
+        feat_tag: "Nahtlose Automation",
+        feat_title: "Gesteuert durch Live-Timecode. Gebaut für Präzision.",
+        feat_desc: "CuePenguin verbindet sich direkt mit deiner Ablaufregie. Steuere OBS Studio Szenen, schalte Kameras und koordiniere deine Crew.",
+        bullet_1: "Multi-Track Timeline Cues",
+        bullet_2: "OBS Studio Automation & Szenen-Sync",
+        bullet_3: "Echtzeit Crew-Ansicht mit Orbit",
+        box_title: "Projekt- & Szenen-Verwaltung",
+        box_desc: "Organisiere Show-Dateien übersichtlich. Greife über Tabellen, Playlists und Pins auf Projekte zu.",
+        cards_heading: "Entwickelt für Live-Performance.",
+        card_1_title: "Multi-Track Cues",
+        card_1_desc: "Plane komplexe Shows mit Kameraschaltern, Audio-Waveforms, Grafik-Triggern und Timing-Spuren.",
+        card_2_title: "Orbit Crew-Ansicht",
+        card_2_desc: "Biete deiner Crew Live-Countdowns, farbige Kachel-Ansichten und GO-Vibrationen.",
+        card_3_title: "Versionskontrolle",
+        card_3_desc: "Verfolge Änderungen, mache Edits rückgängig und hinterlasse timecode-basierte Kommentare.",
+        ed_tag: "Haupt-Arbeitsbereich",
+        ed_title: "Der CuePenguin Editor",
+        ed_sub: "Alles, was du brauchst, um komplexe Show-Abläufe in Echtzeit zu schreiben und auszuführen.",
+        ed_c1_title: "Playlist Szenen-Navigation",
+        ed_c1_desc: "Schalte mühelos durch Show-Szenen mit den Navigations-Buttons in der Topbar.",
+        ed_c2_title: "Timecode Kommentare",
+        ed_c2_desc: "Füge Feedback und Notizen direkt an exakte Timecodes während Proben an.",
+        ed_c3_title: "Neu strukturierte Menüs",
+        ed_c3_desc: "Übersichtliche Aufteilung in Show, Einstellungen, Teilen, Export & Import sowie Hilfe.",
+        orb_tag: "Live Crew Sync",
+        orb_title: "Orbit Crew-Ansicht",
+        orb_sub: "Eine dedizierte Ansicht für Aufnahmeleiter, Kameraleute und Regie.",
+        orb_c1_title: "Flache Liste & Kamera-Kacheln",
+        orb_c1_desc: "Zeigt farbige Kameras, Cue-Countdowns und Progress-Bars direkt in jeder Zeile an.",
+        orb_c2_title: "Eigene Geräte-Einstellungen",
+        orb_c2_desc: "Passe Farben, Schriftgrößen, Display-Wachzustand und Buzz-Regeln pro Gerät an.",
+        rel_tag: "Versionsverlauf",
+        rel_title: "GitHub Release Sync",
+        footer_sub: "Eigenständige Show-Control Software. Workflow inspiriert von LiveEdit.",
+        link_privacy: "Datenschutz",
+        link_terms: "Nutzungsbedingungen",
+        priv_modal_title: "Datenschutzerklärung",
+        priv_modal_p1: "CuePenguin ist eine private Software. Es werden keine personenbezogenen Daten an externe Server gesendet.",
+        priv_modal_p2: "Sämtliche Daten verbleiben zu 100% lokal auf deinem System.",
+        terms_modal_title: "Nutzungsbedingungen",
+        terms_h1: "1. Private Nutzung",
+        terms_p1: "CuePenguin ist ein internes Werkzeug für die inhouse Nutzung.",
+        terms_h2: "2. Keine Kosten",
+        terms_p2: "Die Software bietet 0 Paywalls. Alle Features sind uneingeschränkt nutzbar.",
+        terms_h3: "3. Urheberrecht & Attribution",
+        terms_p3: "Eigenständige Entwicklung. Inspiriert von LiveEdit Workflows.",
+        btn_close: "Schließen"
+      }
+    };
+
+    let currentLang = 'en';
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'en' ? 'de' : 'en';
+      document.getElementById('lang-indicator').innerText = currentLang === 'en' ? 'DE' : 'EN';
+      
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18nData[currentLang][key]) {
+          el.innerHTML = i18nData[currentLang][key];
+        }
+      });
+    }
+
+    // --- THEME SWITCHER SYSTEM ---
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    // Restore saved theme on load
+    if (localStorage.getItem('theme') === 'light') {
+      document.documentElement.classList.remove('dark');
+    }
+
+    // --- TABS & MODALS ---
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('block'));
       
       document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active', 'text-brand');
-        btn.classList.add('text-gray-400');
+        btn.classList.remove('active');
       });
 
       const target = document.getElementById('view-' + tabId);
@@ -462,7 +590,6 @@
       const activeBtn = document.getElementById('tab-' + tabId);
       if (activeBtn) {
         activeBtn.classList.add('active');
-        activeBtn.classList.remove('text-gray-400');
       }
     }
 
@@ -470,13 +597,13 @@
       document.querySelectorAll('.rel-block').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.rel-btn').forEach(btn => {
         btn.classList.remove('text-brand', 'border-brand');
-        btn.classList.add('text-brand-gray', 'border-transparent');
+        btn.classList.add('text-gray-500', 'border-transparent');
       });
 
       document.getElementById('rel-content-' + relId).classList.remove('hidden');
       const activeRelBtn = document.getElementById('rel-' + relId);
       activeRelBtn.classList.add('text-brand', 'border-brand');
-      activeRelBtn.classList.remove('text-brand-gray', 'border-transparent');
+      activeRelBtn.classList.remove('text-gray-500', 'border-transparent');
     }
 
     function openModal(id) {
